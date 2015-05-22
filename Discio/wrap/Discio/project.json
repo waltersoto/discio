@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "net45": {
+      "wrappedProject": "../../Discio.csproj",
+      "bin": {
+        "assembly": "../../obj/{configuration}/Discio.dll",
+        "pdb": "../../obj/{configuration}/Discio.pdb"
+      }
+    }
+  }
+}
