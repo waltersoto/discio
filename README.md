@@ -32,7 +32,7 @@ All data models must implement the interface "IDiscio":
 ###The class **Manager** gives you access to a repository. 
 
 First, you need to create an instance of **Manager** by supplying 
-the data Model as a type parameter and you can either pass the repository name and a data source as a constructor parameter or 
+the data Model as a type parameter and you can either pass the repository name and a data source as constructor parameters or 
 assign the source to **SiteSources.Sources** (the first entry will be used as the default source) 
 and just pass the repository name.
 
