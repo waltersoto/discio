@@ -31,7 +31,7 @@ namespace Discio
                 source = SiteSources.Default;
             }
 
-            var src = source ?? new Source();
+            Source src = source ?? new Source();
 
             toInsert = new List<T>();
             toUpdate = new List<T>();
@@ -73,7 +73,7 @@ namespace Discio
 
         private void ToStorage(List<T> items)
         {
-            var json = ToJson(items);
+            string json = ToJson(items);
             if (File.Exists(master))
             {
                 File.WriteAllText(master,json);
@@ -107,7 +107,7 @@ namespace Discio
             if (toInsert == null || toInsert.Count <= 0) return;
             CreateIds();
 
-            var l = Select();
+            List<T> l = Select();
 
             l.AddRange(toInsert);
 
@@ -119,9 +119,9 @@ namespace Discio
         private void UpdateItems()
         {
             if (toUpdate == null || toUpdate.Count <= 0) return;
-            var l = Select();
+            List<T> l = Select();
 
-            foreach (var item in toUpdate)
+            foreach (T item in toUpdate)
             {
                 int index = l.FindIndex(m => ((IDiscio)m).ID == ((IDiscio)item).ID);
                 if (index != -1)
@@ -137,9 +137,9 @@ namespace Discio
         private void DeleteItems()
         {
             if (toDelete == null || toDelete.Count <= 0) return;
-            var l = Select();
+            List<T> l = Select();
 
-            foreach (var item in toDelete)
+            foreach (T item in toDelete)
             {
                 l.RemoveAll(m => ((IDiscio)m).ID == ((IDiscio)item).ID);
             }
@@ -163,7 +163,7 @@ namespace Discio
         /// <returns></returns>
         public bool Any(Func<T, bool> wherePredicate)
         {
-            var l = FromStorage();
+            List<T> l = FromStorage();
 
             return wherePredicate != null && l.Any(wherePredicate);
         }
@@ -175,7 +175,7 @@ namespace Discio
         /// <returns>List</returns>
         public List<T> Select(Func<T, bool> wherePredicate)
         {
-            var l = FromStorage();
+            List<T> l = FromStorage();
 
             return wherePredicate != null ? l.Where(wherePredicate).ToList() : l;
         }
@@ -197,7 +197,7 @@ namespace Discio
         /// <returns>T</returns>
         public T First()
         {
-            var l = FromStorage();
+            List<T> l = FromStorage();
             return l.FirstOrDefault();
         }
 
@@ -208,7 +208,7 @@ namespace Discio
         /// <returns>T</returns>
         public T First(Func<T, bool> wherePredicate)
         {
-            var l = Select(wherePredicate);
+            List<T> l = Select(wherePredicate);
             return l.FirstOrDefault();
         }
 
@@ -218,7 +218,7 @@ namespace Discio
         /// <returns>T</returns>
         public T Last()
         {
-            var l = FromStorage();
+            List<T> l = FromStorage();
             return l.LastOrDefault();
         }
 
@@ -229,7 +229,7 @@ namespace Discio
         /// <returns>T</returns>
         public T Last(Func<T, bool> wherePredicate)
         {
-            var l = Select(wherePredicate);
+            List<T> l = Select(wherePredicate);
             return l.LastOrDefault();
         }
 
@@ -240,16 +240,16 @@ namespace Discio
         /// <returns>List of T</returns>
         public List<T> Top(int n)
         {
-            var l = FromStorage();
+            List<T> l = FromStorage();
             return l.OrderByDescending(m => m.ID).Take(n).ToList();
         } 
 
         /// <summary>
-        /// Select a page from a set with default size or 5
+        /// Select a page from a set with default size or 10
         /// </summary>
         /// <param name="page">Page number</param>
         /// <returns>List</returns>
-        public List<T> Page(int page) => Page(page, 5);
+        public List<T> Page(int page) => Page(page, 10);
 
         /// <summary>
         /// Select a page from a dataset
@@ -259,7 +259,7 @@ namespace Discio
         /// <returns>List</returns>
         public List<T> Page(int page, int size)
         {
-            var l = Select();
+            List<T> l = Select();
             return l.Skip((page - 1) * size).Take(size).ToList();
         }
 
@@ -273,7 +273,39 @@ namespace Discio
         /// <returns>List</returns>
         public List<T> Page(int page, int size, Func<T, bool> wherePredicate)
         {
-            var l = Select(wherePredicate);
+            List<T> l = Select(wherePredicate);
+            return l.Skip((page - 1) * size).Take(size).ToList();
+        }
+
+        /// <summary>
+        /// Select a page in descending order from a dataset
+        /// </summary>
+        /// <param name="page">Page number</param>
+        /// <param name="size">Page size</param>
+        /// <returns>List</returns>
+        public List<T> PageDescending(int page, int size)
+        {
+            List<T> l = Select().OrderByDescending(m => m.ID).ToList();
+            return l.Skip((page - 1) * size).Take(size).ToList();
+        }
+
+        /// <summary>
+        /// Select a page in descending order from a set with default size or 10
+        /// </summary>
+        /// <param name="page">Page number</param>
+        /// <returns>List</returns>
+        public List<T> PageDescending(int page) => PageDescending(page, 10);
+
+        /// <summary>
+        /// Select a page in descending order from a dataset
+        /// </summary>
+        /// <param name="page">Page number</param>
+        /// <param name="size">Page size</param>
+        /// <param name="wherePredicate">Predicate</param>
+        /// <returns>List</returns>
+        public List<T> PageDescending(int page, int size, Func<T, bool> wherePredicate)
+        {
+            List<T> l = Select().OrderByDescending(m => m.ID).ToList();
             return l.Skip((page - 1) * size).Take(size).ToList();
         }
 
