@@ -129,12 +129,12 @@ namespace Discio
         private static void Empty(DirectoryInfo dir)
         {
 
-            foreach (var file in dir.GetFiles())
+            foreach (FileInfo file in dir.GetFiles())
             {
                 file.Delete();
             }
 
-            foreach (var sub in dir.GetDirectories())
+            foreach (DirectoryInfo sub in dir.GetDirectories())
             {
                 sub.Delete(true);
             };

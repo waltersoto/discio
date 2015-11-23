@@ -340,7 +340,7 @@ namespace Discio
         /// <returns>Record</returns>
         public T Load(string id)
         {
-            var l = Select();
+            List<T> l = Select();
             return l.FirstOrDefault(m => ((IDiscio)m).ID == id);
         }
 
@@ -357,7 +357,7 @@ namespace Discio
         /// <returns>int</returns>
         public int Count(Func<T, bool> wherePredicate)
         {
-            var l = Select(wherePredicate);
+            List<T> l = Select(wherePredicate);
 
             return l.Count;
         }
@@ -406,7 +406,7 @@ namespace Discio
 
         public void Delete(Func<T, bool> where)
         {
-            var s = Select(where);
+            List<T> s = Select(where);
             if (s.Count > 0)
             {
                 Delete(s);
@@ -449,15 +449,12 @@ namespace Discio
             }
 
         }
-
-
-  
-
+        
         private readonly List<T> toInsert;
         private readonly List<T> toUpdate;
         private readonly List<T> toDelete;
 
-
         public string Storage { set; get; }
+
     }
 }

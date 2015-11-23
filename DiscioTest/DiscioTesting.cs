@@ -71,7 +71,7 @@ namespace DiscioTest
             man.Insert(user);
             man.Commit();
 
-            var r = man.First();
+            User r = man.First();
 
             Assert.IsNotNull(r);
             Assert.IsNotNull(r.ID);
@@ -92,7 +92,7 @@ namespace DiscioTest
                 Age = 30
             };
 
-            var saved = PrepareAddUser(user);
+            User saved = PrepareAddUser(user);
 
             var man = new Manager<User>(USER_DATA);
 
