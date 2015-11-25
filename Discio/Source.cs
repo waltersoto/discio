@@ -65,7 +65,7 @@ namespace Discio
         {
             string folder = StoragePath(name);
 
-            var master = string.Concat(folder, @"\master.", Extension);
+            string master = string.Concat(folder, @"\master.", Extension);
 
             var dir = new DirectoryInfo(folder);
 
@@ -83,9 +83,9 @@ namespace Discio
 
         private bool CreateSet(string name, bool overwrite)
         {
-            var folder = StoragePath(name);
+            string folder = StoragePath(name);
 
-            var master = string.Concat(folder, @"\master.", Extension);
+            string master = string.Concat(folder, @"\master.", Extension);
 
             var dir = new DirectoryInfo(folder);
 
@@ -110,7 +110,7 @@ namespace Discio
 
         public bool Exists(string name)
         {
-            var folder = StoragePath(name);
+            string folder = StoragePath(name);
              
             return Directory.Exists(folder);
         }
