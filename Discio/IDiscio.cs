@@ -1,8 +1,6 @@
-﻿ 
-namespace Discio
-{
-    public interface IDiscio
-    {
+﻿
+namespace Discio {
+    public interface IDiscio {
         string ID { set; get; }
     }
 }

@@ -4,10 +4,8 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace Discio
-{
-    public class Manager<T> where T:IDiscio
-    {
+namespace Discio {
+    public class Manager<T> where T : IDiscio {
         private readonly string master;
 
         /// <summary>
@@ -15,8 +13,7 @@ namespace Discio
         /// </summary>
         /// <param name="name">Master</param>
         public Manager(string name) :
-            this(name, "")
-        { }
+            this(name, "") { }
 
 
         /// <summary>
@@ -24,10 +21,8 @@ namespace Discio
         /// </summary>
         /// <param name="name">Master</param>
         /// <param name="source">Storage source</param>
-        public Manager(string name, Source source)
-        {
-            if (source == null)
-            {
+        public Manager(string name, Source source) {
+            if (source == null) {
                 source = SiteSources.Default;
             }
 
@@ -37,13 +32,10 @@ namespace Discio
             toUpdate = new List<T>();
             toDelete = new List<T>();
 
-            if (src.IsValid(name))
-            {
+            if (src.IsValid(name)) {
                 Storage = src.StoragePath(name);
                 master = src.MasterPath(name);
-            }
-            else
-            {
+            } else {
                 throw new DiscioException("Invalid DataFolder in source");
             }
 
@@ -54,56 +46,47 @@ namespace Discio
         /// </summary>
         /// <param name="name">Master</param>
         /// <param name="sourceKey">Storage source key</param>
-        public Manager(string name, string sourceKey):this(name,
-            (!string.IsNullOrEmpty(sourceKey))?SiteSources.Sources[sourceKey]:null)
-        { 
+        public Manager(string name, string sourceKey) : this(name,
+            (!string.IsNullOrEmpty(sourceKey)) ? SiteSources.Sources[sourceKey] : null) {
         }
 
-        public void Commit()
-        {
+        public void Commit() {
             InsertItems();
             UpdateItems();
             DeleteItems();
         }
 
-        private static string ToJson(List<T> items)
-        {
-           return JsonConvert.SerializeObject(items);
+        private static string ToJson(List<T> items) {
+            return JsonConvert.SerializeObject(items);
         }
 
-        private void ToStorage(List<T> items)
-        {
+        private void ToStorage(List<T> items) {
             string json = ToJson(items);
-            if (File.Exists(master))
-            {
-                File.WriteAllText(master,json);
+            if (File.Exists(master)) {
+                File.WriteAllText(master, json);
             }
- 
+
         }
 
-        private List<T> FromStorage()
-        {  
+        private List<T> FromStorage() {
             var r = new List<T>();
 
             if (!File.Exists(master)) return r;
             string json = File.ReadAllText(master);
             r = JsonConvert.DeserializeObject<List<T>>(json) ?? new List<T>();
-            
+
             return r;
-        } 
+        }
 
         #region CRUD
 
-        private void CreateIds()
-        {
-            foreach (T item in toInsert)
-            {
+        private void CreateIds() {
+            foreach (T item in toInsert) {
                 ((IDiscio)item).ID = Guid.NewGuid().ToString();
             }
         }
 
-        private void InsertItems()
-        {
+        private void InsertItems() {
             if (toInsert == null || toInsert.Count <= 0) return;
             CreateIds();
 
@@ -111,41 +94,36 @@ namespace Discio
 
             l.AddRange(toInsert);
 
-                 
+
             ToStorage(l);
             toInsert.Clear();
         }
 
-        private void UpdateItems()
-        {
+        private void UpdateItems() {
             if (toUpdate == null || toUpdate.Count <= 0) return;
             List<T> l = Select();
 
-            foreach (T item in toUpdate)
-            {
+            foreach (T item in toUpdate) {
                 int index = l.FindIndex(m => ((IDiscio)m).ID == ((IDiscio)item).ID);
-                if (index != -1)
-                {
+                if (index != -1) {
                     l[index] = item;
                 }
             }
 
-            ToStorage(l); 
+            ToStorage(l);
             toUpdate.Clear();
         }
 
-        private void DeleteItems()
-        {
+        private void DeleteItems() {
             if (toDelete == null || toDelete.Count <= 0) return;
             List<T> l = Select();
 
-            foreach (T item in toDelete)
-            {
+            foreach (T item in toDelete) {
                 l.RemoveAll(m => ((IDiscio)m).ID == ((IDiscio)item).ID);
             }
-                 
+
             ToStorage(l);
-                
+
             toDelete.Clear();
         }
 
@@ -153,16 +131,15 @@ namespace Discio
 
 
         #region "Queries"
- 
 
-       
+
+
         /// <summary>
         /// Is any record matching the criteria exists
         /// </summary>
         /// <param name="wherePredicate"></param>
         /// <returns></returns>
-        public bool Any(Func<T, bool> wherePredicate)
-        {
+        public bool Any(Func<T, bool> wherePredicate) {
             List<T> l = FromStorage();
 
             return wherePredicate != null && l.Any(wherePredicate);
@@ -173,8 +150,7 @@ namespace Discio
         /// </summary>
         /// <param name="wherePredicate">predicate</param>
         /// <returns>List</returns>
-        public List<T> Select(Func<T, bool> wherePredicate)
-        {
+        public List<T> Select(Func<T, bool> wherePredicate) {
             List<T> l = FromStorage();
 
             return wherePredicate != null ? l.Where(wherePredicate).ToList() : l;
@@ -195,8 +171,7 @@ namespace Discio
         /// Return first record
         /// </summary>
         /// <returns>T</returns>
-        public T First()
-        {
+        public T First() {
             List<T> l = FromStorage();
             return l.FirstOrDefault();
         }
@@ -206,8 +181,7 @@ namespace Discio
         /// </summary>
         /// <param name="wherePredicate">predicate</param>
         /// <returns>T</returns>
-        public T First(Func<T, bool> wherePredicate)
-        {
+        public T First(Func<T, bool> wherePredicate) {
             List<T> l = Select(wherePredicate);
             return l.FirstOrDefault();
         }
@@ -216,8 +190,7 @@ namespace Discio
         /// Return last record
         /// </summary>
         /// <returns>T</returns>
-        public T Last()
-        {
+        public T Last() {
             List<T> l = FromStorage();
             return l.LastOrDefault();
         }
@@ -227,8 +200,7 @@ namespace Discio
         /// </summary>
         /// <param name="wherePredicate">predicate</param>
         /// <returns>T</returns>
-        public T Last(Func<T, bool> wherePredicate)
-        {
+        public T Last(Func<T, bool> wherePredicate) {
             List<T> l = Select(wherePredicate);
             return l.LastOrDefault();
         }
@@ -238,11 +210,10 @@ namespace Discio
         /// </summary>
         /// <param name="n">Number of values</param>
         /// <returns>List of T</returns>
-        public List<T> Top(int n)
-        {
+        public List<T> Top(int n) {
             List<T> l = FromStorage();
             return l.OrderByDescending(m => m.ID).Take(n).ToList();
-        } 
+        }
 
         /// <summary>
         /// Select a page from a set with default size or 10
@@ -257,8 +228,7 @@ namespace Discio
         /// <param name="page">Page number</param>
         /// <param name="size">Page size</param>
         /// <returns>List</returns>
-        public List<T> Page(int page, int size)
-        {
+        public List<T> Page(int page, int size) {
             List<T> l = Select();
             return l.Skip((page - 1) * size).Take(size).ToList();
         }
@@ -271,8 +241,7 @@ namespace Discio
         /// <param name="size">Page size</param>
         /// <param name="wherePredicate">Predicate</param>
         /// <returns>List</returns>
-        public List<T> Page(int page, int size, Func<T, bool> wherePredicate)
-        {
+        public List<T> Page(int page, int size, Func<T, bool> wherePredicate) {
             List<T> l = Select(wherePredicate);
             return l.Skip((page - 1) * size).Take(size).ToList();
         }
@@ -283,8 +252,7 @@ namespace Discio
         /// <param name="page">Page number</param>
         /// <param name="size">Page size</param>
         /// <returns>List</returns>
-        public List<T> PageDescending(int page, int size)
-        {
+        public List<T> PageDescending(int page, int size) {
             List<T> l = Select().OrderByDescending(m => m.ID).ToList();
             return l.Skip((page - 1) * size).Take(size).ToList();
         }
@@ -303,8 +271,7 @@ namespace Discio
         /// <param name="size">Page size</param>
         /// <param name="wherePredicate">Predicate</param>
         /// <returns>List</returns>
-        public List<T> PageDescending(int page, int size, Func<T, bool> wherePredicate)
-        {
+        public List<T> PageDescending(int page, int size, Func<T, bool> wherePredicate) {
             List<T> l = Select().OrderByDescending(m => m.ID).ToList();
             return l.Skip((page - 1) * size).Take(size).ToList();
         }
@@ -314,8 +281,7 @@ namespace Discio
         /// </summary>
         /// <param name="size">Size</param>
         /// <returns>count</returns>
-        public int PageCount(int size)
-        {
+        public int PageCount(int size) {
             double count = Count();
             return (int)Math.Ceiling((count / size));
         }
@@ -326,8 +292,7 @@ namespace Discio
         /// <param name="size">Size</param>
         /// <param name="wherePredicate">Predicate</param>
         /// <returns>count</returns>
-        public int PageCount(int size, Func<T, bool> wherePredicate)
-        {
+        public int PageCount(int size, Func<T, bool> wherePredicate) {
             double count = Count(wherePredicate);
             return (int)Math.Ceiling((count / size));
         }
@@ -338,8 +303,7 @@ namespace Discio
         /// </summary>
         /// <param name="id">Record id</param>
         /// <returns>Record</returns>
-        public T Load(string id)
-        {
+        public T Load(string id) {
             List<T> l = Select();
             return l.FirstOrDefault(m => ((IDiscio)m).ID == id);
         }
@@ -355,8 +319,7 @@ namespace Discio
         /// </summary>
         /// <param name="wherePredicate">Predicate</param>
         /// <returns>int</returns>
-        public int Count(Func<T, bool> wherePredicate)
-        {
+        public int Count(Func<T, bool> wherePredicate) {
             List<T> l = Select(wherePredicate);
 
             return l.Count;
@@ -371,10 +334,8 @@ namespace Discio
         /// Insert an item
         /// </summary>
         /// <param name="item">IDiscio item</param>
-        public void Insert(T item)
-        {
-            if (item != null)
-            {
+        public void Insert(T item) {
+            if (item != null) {
                 toInsert.Add(item);
             }
 
@@ -384,10 +345,8 @@ namespace Discio
         /// Insert a list of items
         /// </summary>
         /// <param name="items">IDiscio items</param>
-        public void Insert(List<T> items)
-        {
-            if (items != null && items.Count > 0)
-            {
+        public void Insert(List<T> items) {
+            if (items != null && items.Count > 0) {
                 toInsert.AddRange(items);
             }
         }
@@ -396,19 +355,15 @@ namespace Discio
         /// Add an item to be deleted
         /// </summary>
         /// <param name="item">IDiscio item</param>
-        public void Delete(T item)
-        {
-            if (item != null)
-            {
+        public void Delete(T item) {
+            if (item != null) {
                 toDelete.Add(item);
             }
         }
 
-        public void Delete(Func<T, bool> where)
-        {
+        public void Delete(Func<T, bool> where) {
             List<T> s = Select(where);
-            if (s.Count > 0)
-            {
+            if (s.Count > 0) {
                 Delete(s);
             }
         }
@@ -417,11 +372,9 @@ namespace Discio
         /// Add items to be deleted
         /// </summary>
         /// <param name="items">IDiscio items</param>
-        public void Delete(List<T> items)
-        {
-            if (items != null && items.Count > 0)
-            {
-               toDelete.AddRange(items);  
+        public void Delete(List<T> items) {
+            if (items != null && items.Count > 0) {
+                toDelete.AddRange(items);
             }
         }
 
@@ -429,10 +382,8 @@ namespace Discio
         /// Add an item to be updated
         /// </summary>
         /// <param name="item">IDiscio item</param>
-        public void Update(T item)
-        {
-            if (item != null)
-            {
+        public void Update(T item) {
+            if (item != null) {
                 toUpdate.Add(item);
             }
         }
@@ -441,15 +392,13 @@ namespace Discio
         /// Add items to be updated
         /// </summary>
         /// <param name="items">IDiscio items</param>
-        public void Update(List<T> items)
-        {
-            if (items != null && items.Count > 0)
-            {
+        public void Update(List<T> items) {
+            if (items != null && items.Count > 0) {
                 toUpdate.AddRange(items);
             }
 
         }
-        
+
         private readonly List<T> toInsert;
         private readonly List<T> toUpdate;
         private readonly List<T> toDelete;

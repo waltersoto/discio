@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Discio
-{
+namespace Discio {
 
     [Serializable]
-    public class DiscioException : Exception
-    {
+    public class DiscioException : Exception {
 
         /// <summary>
         /// Default constructor
         /// </summary>
-        public DiscioException()
-        {
+        public DiscioException() {
         }
 
         /// <summary>
@@ -20,8 +17,7 @@ namespace Discio
         /// </summary>
         /// <param name="message"></param>
         public DiscioException(string message)
-            : base(message)
-        {
+            : base(message) {
         }
 
         /// <summary>
@@ -30,8 +26,7 @@ namespace Discio
         /// <param name="message"></param>
         /// <param name="inner"></param>
         public DiscioException(string message, Exception inner)
-            : base(message, inner)
-        {
+            : base(message, inner) {
         }
 
         /// <summary>
@@ -40,8 +35,7 @@ namespace Discio
         /// <param name="info"></param>
         /// <param name="context"></param>
         protected DiscioException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
+            : base(info, context) {
         }
 
     }
