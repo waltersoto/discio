@@ -1,8 +1,8 @@
 # discio
 
-Discio allows you to store and manage data using a local JSON file. Discio is not intended to replace a NoSQL database but it can be used as one for rapid prototyping or when only small amounts of data need to be managed (ex. Settings, roaming profiles, etc.).
+Discio allows you to store and manage data using a local JSON file. Discio is not intended to replace a NoSQL database but it can be used for prototyping or when only small amounts of data need to be managed (ex. Settings, roaming profiles, etc.).
 
-###Usage
+## Usage
 
 Creating a repository
 ```c#
@@ -11,8 +11,7 @@ Creating a repository
    var dataSrc = new Source(dataFolder);
 
    //If the repository "users" does not exists create it
-   if (!dataSrc.Exists("users"))
-   {
+   if (!dataSrc.Exists("users")) {}
          dataSrc.Create("users");
    }
 ```
@@ -29,7 +28,7 @@ All data models must implement the interface "IDiscio":
 ```
  
 
-###The class **Manager** gives you access to a repository. 
+### The class **Manager** gives you access to a repository. 
 
 First, you need to create an instance of **Manager** by supplying 
 the data Model as a type parameter and you can either pass the repository name and a data source as constructor parameters or 

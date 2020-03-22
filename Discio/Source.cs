@@ -74,7 +74,8 @@ namespace Discio {
             }
             if (dir.Exists && overwrite) {
                 Empty(dir);
-            } else if (!dir.Exists) {
+            }
+            else if (!dir.Exists) {
                 dir.Create();
             }
             File.Create(master).Close();
@@ -89,6 +90,11 @@ namespace Discio {
         public bool Create(string name) => Create(name, false);
 
         public bool Create(string name, bool overwrite) => CreateSet(name, overwrite);
+
+        public bool CreateIfNeeded(string name) {
+            if (Exists(name)) return true;
+            return Create(name);
+        }
 
         private static void Empty(DirectoryInfo dir) {
             foreach (var file in dir.GetFiles()) {

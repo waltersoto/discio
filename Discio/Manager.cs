@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
 
 namespace Discio {
     public class Manager<T> where T : IDiscio {
@@ -35,7 +35,8 @@ namespace Discio {
             if (src.IsValid(name)) {
                 Storage = src.StoragePath(name);
                 master = src.MasterPath(name);
-            } else {
+            }
+            else {
                 throw new DiscioException("Invalid DataFolder in source");
             }
 
@@ -78,7 +79,7 @@ namespace Discio {
             return r;
         }
 
-        #region CRUD
+        #region Insert Data
 
         private void CreateIds() {
             foreach (T item in toInsert) {
@@ -141,7 +142,6 @@ namespace Discio {
         /// <returns></returns>
         public bool Any(Func<T, bool> wherePredicate) {
             List<T> l = FromStorage();
-
             return wherePredicate != null && l.Any(wherePredicate);
         }
 

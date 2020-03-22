@@ -1,13 +1,13 @@
-﻿
-using Discio;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DiscioTest {
+namespace Discio.Test {
+
     [TestClass]
     public class DiscioTesting {
 
         private const string USER_DATA = "users";
-        private const string DATA_STORAGE = @"C:\Temp\Data";
+        //Path to the storage folder
+        private const string DATA_STORAGE = "";
         private const string DATA_SOURCE = "main";
 
         [TestMethod]
@@ -90,4 +90,5 @@ namespace DiscioTest {
         public string LastName { set; get; }
         public int Age { set; get; }
     }
+
 }
